@@ -7,15 +7,24 @@
 //
 
 import UIKit
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    var lm: CLLocationManager!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // NSUserDefaultsの初期化
+        NSUserDefaults.standardUserDefaults().setObject("", forKey:"logKey");
+        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLatitudeKey");
+        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLongitudeKey");
+        NSUserDefaults.standardUserDefaults().synchronize();
+        
         return true
     }
 

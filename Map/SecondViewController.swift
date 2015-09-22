@@ -11,7 +11,7 @@ import CoreLocation
 
 class SecondViewController: UIViewController, CLLocationManagerDelegate {
     
-    let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var lm: CLLocationManager!
     
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
     var titleLabel = UILabel(frame: CGRectMake(20, 100, 100, 30))
@@ -26,18 +26,18 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         
         initView()
         
-        if appDelegate.lm == nil {
-            appDelegate.lm = CLLocationManager()
-            appDelegate.lm.delegate = self
+        if lm == nil {
+            lm = CLLocationManager()
+            lm.delegate = self
             
             // 位置情報取得の許可を求めるメッセージの表示．必須．
-            appDelegate.lm.requestAlwaysAuthorization()
+            lm.requestAlwaysAuthorization()
             
             // GPSの使用を開始する
-            appDelegate.lm.startUpdatingLocation()
-            appDelegate.lm.desiredAccuracy = kCLLocationAccuracyBest
-            // appDelegate.lm.distanceFilter = 200
-            appDelegate.lm.activityType = CLActivityType.Fitness
+            lm.startUpdatingLocation()
+            lm.desiredAccuracy = kCLLocationAccuracyBest
+            // lm.distanceFilter = 200
+            lm.activityType = CLActivityType.Fitness
             isUpdatingLocation = true
         }
         
@@ -139,6 +139,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         NSUserDefaults.standardUserDefaults().synchronize();
         
         // インスタンスを破棄
-        appDelegate.lm  = nil
+        lm  = nil
     }
 }

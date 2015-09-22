@@ -12,7 +12,7 @@ import CoreLocation
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     
-    let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    var lm: CLLocationManager!
     
     var latitude: CLLocationDegrees!
     var longitude: CLLocationDegrees!
@@ -141,9 +141,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // AutoLayout End ----------------------
         
         // 現在地の取得.
-        appDelegate.lm = CLLocationManager()
+        lm = CLLocationManager()
         
-        appDelegate.lm.delegate = self
+        lm.delegate = self
         
         // セキュリティ認証のステータスを取得.
         let status = CLLocationManager.authorizationStatus()
@@ -152,13 +152,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         if(status == CLAuthorizationStatus.NotDetermined) {
             print("didChangeAuthorizationStatus:\(status)");
             // まだ承認が得られていない場合は、認証ダイアログを表示.
-            appDelegate.lm.requestAlwaysAuthorization()
+            lm.requestAlwaysAuthorization()
         }
         
         // 取得精度の設定.
-        appDelegate.lm.desiredAccuracy = kCLLocationAccuracyBest
+        lm.desiredAccuracy = kCLLocationAccuracyBest
         // 取得頻度の設定.
-        appDelegate.lm.distanceFilter = 100
+        lm.distanceFilter = 100
         
         self.view.addSubview(myButton)
     }
@@ -195,16 +195,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     // buttonをタップしたときのアクション
     func onClick() {
-        let second:SecondViewController? = SecondViewController()
-        self.presentViewController(second!, animated: true, completion: nil)
+        let second:SecondViewController = SecondViewController()
+        self.presentViewController(second, animated: true, completion: nil)
         
-        appDelegate.lm = nil
+        lm = nil
     }
     
     // ボタンイベントのセット.
     func onClickMyButton(sender: UIButton){
         // 現在位置の取得を開始.
-        appDelegate.lm.startUpdatingLocation()
+        lm.startUpdatingLocation()
     }
     
     // 位置情報取得に成功したときに呼び出されるデリゲート.
@@ -214,7 +214,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let longitude = newLocation.coordinate.longitude
         
         let mapPoint:CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitude,longitude)
+        mapView.setCenterCoordinate(mapPoint, animated: false)
         
+        // ズーム
+        var zoom: MKCoordinateRegion = mapView.region
+        zoom.span.latitudeDelta = 0.005
+        zoom.span.longitudeDelta = 0.005
+        mapView.setRegion(zoom, animated: true)
+        mapView.showsUserLocation = true
+
         dropPin(mapPoint)
     }
     

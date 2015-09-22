@@ -33,7 +33,7 @@ class function1 {
         
         let meter1 = pow((latitude1 - latitude2) / 0.0111, 2.0)
         let meter2 = pow((longitude1 - longitude2) / 0.0091, 2.0)
-        let meter = sqrt(meter1 + meter2)
+        let meter = sqrt(meter1 + meter2) * 1000
         return UInt32(meter)
     }
 }

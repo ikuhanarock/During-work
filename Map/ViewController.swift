@@ -77,7 +77,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         myButton.layer.masksToBounds = true
         myButton.setTitle("Get", forState: .Normal)
         myButton.layer.cornerRadius = 25.0
-        // myButton.layer.position = CGPoint(x: self.view.bounds.width/2, y:self.view.bounds.height/2)
         myButton.addTarget(self, action: "onClickMyButton:", forControlEvents: .TouchUpInside)
 
         // AutoLayout ----------------------
@@ -138,29 +137,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 constant: 50
             )]
         )
-        // AutoLayout End ----------------------
-        
-        // 現在地の取得.
-        lm = CLLocationManager()
-        
-        lm.delegate = self
-        
-        // セキュリティ認証のステータスを取得.
-        let status = CLLocationManager.authorizationStatus()
-        
-        // まだ認証が得られていない場合は、認証ダイアログを表示.
-        if(status == CLAuthorizationStatus.NotDetermined) {
-            print("didChangeAuthorizationStatus:\(status)");
-            // まだ承認が得られていない場合は、認証ダイアログを表示.
-            lm.requestAlwaysAuthorization()
-        }
-        
-        // 取得精度の設定.
-        lm.desiredAccuracy = kCLLocationAccuracyBest
-        // 取得頻度の設定.
-        lm.distanceFilter = 100
-        
         self.view.addSubview(myButton)
+        // AutoLayout End ----------------------
     }
     
     override func didReceiveMemoryWarning() {
@@ -203,6 +181,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     // ボタンイベントのセット.
     func onClickMyButton(sender: UIButton){
+        
+        // 現在地の取得
+        if lm == nil {
+            lm = CLLocationManager()
+            lm.delegate = self
+            
+            let status = CLLocationManager.authorizationStatus()
+            if(status == CLAuthorizationStatus.NotDetermined) {
+                print("didChangeAuthorizationStatus:\(status)");
+                lm.requestAlwaysAuthorization()
+            }
+            
+            lm.desiredAccuracy = kCLLocationAccuracyBest
+            lm.distanceFilter = 100
+        }
+        
         // 現在位置の取得を開始.
         lm.startUpdatingLocation()
     }
@@ -224,6 +218,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         mapView.showsUserLocation = true
 
         dropPin(mapPoint)
+        
+        lm.stopUpdatingLocation()
     }
     
     // 位置情報取得に失敗した時に呼び出されるデリゲート.

@@ -11,10 +11,12 @@ import CoreLocation
 
 class SecondViewController: UIViewController, CLLocationManagerDelegate {
     
+    var delegate: ViewControllerDelegate!
+    
     var lm: CLLocationManager!
     
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
-    var titleLabel = UILabel(frame: CGRectMake(20, 100, 100, 30))
+    var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
     var logLabel = UILabel(frame: CGRectMake(0, 00, 00, 00))
     
     var targetLatitude: Double = 0.0
@@ -68,7 +70,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         var viewsDictionary = [String: AnyObject]()
         viewsDictionary["top_hogehoge"] = logLabel
         let label_constraint_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("|-8-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: viewsDictionary)
-        let label_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-140-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: viewsDictionary)
+        let label_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-110-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: viewsDictionary)
         
         view.addConstraints(label_constraint_1 as! [NSLayoutConstraint])
         view.addConstraints(label_constraint_2 as! [NSLayoutConstraint])
@@ -90,7 +92,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         var btnsDictionary = [String: AnyObject]()
         btnsDictionary["top_hogehoge"] = btn
         let btn_constraint_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("|-8-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
-        let btn_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-50-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
+        let btn_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
         
         view.addConstraints(btn_constraint_1 as! [NSLayoutConstraint])
         view.addConstraints(btn_constraint_2 as! [NSLayoutConstraint])
@@ -98,7 +100,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         
         // Title
         titleLabel.text = "Title"
-        titleLabel.textColor = UIColor.whiteColor()
+        titleLabel.textColor = UIColor.cyanColor()
         self.view.addSubview(titleLabel);
     }
     
@@ -132,7 +134,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func onClick() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismissViewControllerAnimated(true, completion: {self.delegate.initView()})
         
         // 保存
         NSUserDefaults.standardUserDefaults().setObject(logLabel.text, forKey:"logKey");

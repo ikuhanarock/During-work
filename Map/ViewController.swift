@@ -10,7 +10,11 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+protocol ViewControllerDelegate {
+    func initView()
+}
+
+class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, ViewControllerDelegate {
     
     var lm: CLLocationManager!
     
@@ -57,7 +61,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         var btnsDictionary = [String: AnyObject]()
         btnsDictionary["top_hogehoge"] = btn
         let btn_constraint_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("|-8-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
-        let btn_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-50-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
+        let btn_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
         
         view.addConstraints(btn_constraint_1 as! [NSLayoutConstraint])
         view.addConstraints(btn_constraint_2 as! [NSLayoutConstraint])
@@ -165,15 +169,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     // 端末の向きがかわったら呼び出される.
     func onOrientationChange(notification: NSNotification){
-        
-        // MapViewのサイズを再調整する。
-        self.mapView.frame = CGRectMake(0,0,self.view.bounds.size.width,self.view.bounds.size.height)
-        self.view.addSubview(self.mapView)
+        initView()
     }
     
     // buttonをタップしたときのアクション
     func onClick() {
-        let second:SecondViewController = SecondViewController()
+        let rootViewViewController = SecondViewController()
+        rootViewViewController.delegate = self
+        let second:SecondViewController = rootViewViewController
         self.presentViewController(second, animated: true, completion: nil)
         
         lm = nil

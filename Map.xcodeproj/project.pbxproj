@@ -27,16 +27,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D61932DC1BB53A0F003B7309 /* Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Map.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D61932DD1BB53A0F003B7309 /* MapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D62F3D671BA1A86900D74A06 /* function.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = function.swift; sourceTree = "<group>"; };
 		D65622681BA03D3A003BC1E9 /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
-		D688A7991B04F2F900C5200C /* Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Map.app; path = "/Users/yuta/OneDrive/Projects/Map/build/Debug-iphoneos/Map.app"; sourceTree = "<absolute>"; };
 		D688A79D1B04F2F900C5200C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D688A79E1B04F2F900C5200C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D688A7A01B04F2F900C5200C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D688A7A31B04F2F900C5200C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D688A7A51B04F2F900C5200C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D688A7A81B04F2F900C5200C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D688A7AE1B04F2F900C5200C /* MapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = MapTests.xctest; path = "/Users/yuta/OneDrive/Projects/Map/build/Debug-iphoneos/MapTests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				D688A79B1B04F2F900C5200C /* Map */,
+				D61932DC1BB53A0F003B7309 /* Map.app */,
+				D61932DD1BB53A0F003B7309 /* MapTests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,7 +106,7 @@
 			);
 			name = Map;
 			productName = Map;
-			productReference = D688A7991B04F2F900C5200C /* Map.app */;
+			productReference = D61932DC1BB53A0F003B7309 /* Map.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D688A7AD1B04F2F900C5200C /* MapTests */ = {
@@ -122,7 +124,7 @@
 			);
 			name = MapTests;
 			productName = MapTests;
-			productReference = D688A7AE1B04F2F900C5200C /* MapTests.xctest */;
+			productReference = D61932DD1BB53A0F003B7309 /* MapTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -138,6 +140,7 @@
 				TargetAttributes = {
 					D688A7981B04F2F900C5200C = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = 8S4DVX452D;
 					};
 					D688A7AD1B04F2F900C5200C = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -319,10 +322,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Map/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "yuta.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -330,10 +336,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Map/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "yuta.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

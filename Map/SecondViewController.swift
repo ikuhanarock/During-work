@@ -16,6 +16,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var lm: CLLocationManager!
     
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
+    let btnAPI = UIButton(frame: CGRectMake(20, 0, 100, 30))
     var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
     var logLabel = UILabel(frame: CGRectMake(0, 00, 00, 00))
     
@@ -76,13 +77,13 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         view.addConstraints(label_constraint_2 as! [NSLayoutConstraint])
         // AutoLayout End ----------------------
         
-        // buttonを設置
+        // BackButtonを設置
         btn.setTitle("Back", forState: UIControlState.Normal)
         btn.backgroundColor = UIColor.cyanColor()
         btn.layer.cornerRadius = 10
         btn.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         btn.layer.position = CGPoint(x: 100, y: 100)
-        btn.addTarget(self, action: "onClick", forControlEvents: UIControlEvents.TouchUpInside)
+        btn.addTarget(self, action: "onClickBack", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(btn)
         
         // AutoLayout ----------------------
@@ -97,6 +98,15 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         view.addConstraints(btn_constraint_1 as! [NSLayoutConstraint])
         view.addConstraints(btn_constraint_2 as! [NSLayoutConstraint])
         // AutoLayout End ----------------------
+        
+        // GetAPIButtonを設置
+        btnAPI.setTitle("Get API", forState: UIControlState.Normal)
+        btnAPI.backgroundColor = UIColor.cyanColor()
+        btnAPI.layer.cornerRadius = 10
+        btnAPI.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        btnAPI.layer.position = CGPoint(x: 100, y: 100)
+        btnAPI.addTarget(self, action: "onClickGetAPI", forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(btnAPI)
         
         // Title
         titleLabel.text = "Title"
@@ -133,7 +143,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         self.view.addSubview(logLabel);
     }
     
-    func onClick() {
+    func onClickBack() {
         self.dismissViewControllerAnimated(true, completion: {self.delegate.initView()})
         
         // 保存
@@ -142,5 +152,23 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         
         // インスタンスを破棄
         lm  = nil
+    }
+    
+    func onClickGetAPI() {
+        getData("http://express.heartrails.com/api/json?method=getPrefectures")
+    }
+    
+    // API取得の開始処理
+    func getData(hostAddress : String) {
+        let url: NSURL = NSURL(string: hostAddress)!
+        let req = NSURLRequest(URL: url)
+        let session = NSURLSession.sharedSession()
+        
+        session.dataTaskWithRequest(req, completionHandler: { (data, response, error) in
+            print("data: \(data)")
+            print("response: \(response)")
+            print("error: \(error)")
+        }).resume()
+        
     }
 }

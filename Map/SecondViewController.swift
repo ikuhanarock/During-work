@@ -161,14 +161,34 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     // API取得の開始処理
     func getData(hostAddress : String) {
         let url: NSURL = NSURL(string: hostAddress)!
-        let req = NSURLRequest(URL: url)
+        // let req = NSURLRequest(URL: url)
         let session = NSURLSession.sharedSession()
         
-        session.dataTaskWithRequest(req, completionHandler: { (data, response, error) in
+        let task = session.dataTaskWithURL(url, completionHandler: { data, response, error in
+
+            do {
+                // JSONデータを辞書に変換する
+                let dict = try NSJSONSerialization.JSONObjectWithData(data!,
+                    options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
+                
+                // /responseData/feed/entriesを取得する
+                guard let response = dict["response"] as? NSDictionary else {return}
+                let test: NSArray = response["prefecture"] as! NSArray
+                for var i=0 ; i < test.count ; i++ {
+                    print("prefecture: \(test[i])")
+                }
+            } catch {}
+
             print("data: \(data)")
             print("response: \(response)")
             print("error: \(error)")
-        }).resume()
+        })
+        task.resume()
+        
+        // メインスレッドにスイッチする
+        dispatch_async(dispatch_get_main_queue(), {
+
+        }) //in complitionHandler
         
     }
 }

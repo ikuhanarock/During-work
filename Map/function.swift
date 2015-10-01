@@ -24,8 +24,9 @@ class function1 {
             NSLog("緯度: \(latitude) , 経度: \(longitude)")
             return "\(time) latiitude: \(latitude) , longitude: \(longitude) \n"
         } else {
-            NSLog("位置情報の取得に失敗しました。")
-            return "\(time) 位置情報の取得に失敗しました。"
+            let errMsg = "位置情報の取得に失敗しました。\n"
+            NSLog(errMsg)
+            return "\(time) \(errMsg)"
         }
     }
     

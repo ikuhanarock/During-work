@@ -133,6 +133,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         
         log = log! + function1().FormatLocationLog(latitude, longitude:longitude)
         logLabel.text = log!
+        postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
         self.view.addSubview(logLabel);
     }
     
@@ -155,7 +156,40 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func onClickGetAPI() {
-        getData("http://express.heartrails.com/api/json?method=getPrefectures")
+        // getData("http://express.heartrails.com/api/json?method=getPrefectures");
+        postData("http://localhost:8124/", user: "TESTUSER", latitude: 12.0, longitude: 34.0);
+    }
+    
+    func postData(hostAddress : String, user : String, latitude : Double, longitude : Double) {
+        
+        let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
+        let mySession:NSURLSession = NSURLSession(configuration: myConfig)
+        let myUrl:NSURL = NSURL(string: hostAddress)!
+
+        let myRequest:NSMutableURLRequest = NSMutableURLRequest(URL: myUrl)
+        myRequest.HTTPMethod = "POST"
+        
+        let str:NSString = "{ \"user\" : \" \(user) \", \"latitude\": \(latitude) , \"longitude\": \(longitude) }"
+        let myData:NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
+        myRequest.HTTPBody = myData
+
+        let myTask:NSURLSessionDataTask = mySession.dataTaskWithRequest(myRequest)
+        myTask.resume()
+    }
+    
+    /*
+    通信が終了したときに呼び出されるデリゲート.
+    */
+    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
+        
+        // 帰ってきたデータを文字列に変換.
+        let myData:NSString = NSString(data: data, encoding: NSUTF8StringEncoding)!
+        
+        // バックグラウンドだとUIの処理が出来ないので、メインスレッドでUIの処理を行わせる.
+        dispatch_async(dispatch_get_main_queue(), {
+            print("test \(myData as String)");
+        })
+        
     }
     
     // API取得の開始処理
@@ -171,7 +205,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
                 let dict = try NSJSONSerialization.JSONObjectWithData(data!,
                     options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
                 
-                // /responseData/feed/entriesを取得する
+                // /response/prefecture を取得する
                 guard let response = dict["response"] as? NSDictionary else {return}
                 let test: NSArray = response["prefecture"] as! NSArray
                 for var i=0 ; i < test.count ; i++ {

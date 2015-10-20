@@ -25,32 +25,12 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var targetLongitude: Double = 0.0
     var isUpdatingLocation: Bool = false
     
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initView()
         
         NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
-        
-//        if lm == nil {
-//            lm = CLLocationManager()
-//            lm.delegate = self
-//            
-//            // 位置情報取得の許可を求めるメッセージの表示．必須．
-//            lm.requestAlwaysAuthorization()
-//            
-//            //位置情報取得の可否。バックグラウンドで実行中の場合にもアプリが位置情報を利用することを許可する
-//            lm.requestAlwaysAuthorization()
-//            
-//            // GPSの使用を開始する
-//            lm.startUpdatingLocation()
-//            lm.desiredAccuracy = kCLLocationAccuracyBest
-//            // lm.distanceFilter = 200
-//            lm.activityType = CLActivityType.Fitness
-//            isUpdatingLocation = true
-//        }
         
         // ターゲットの位置情報を読み込む
         targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
@@ -127,15 +107,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         view.addConstraints(btn_constraint_2 as! [NSLayoutConstraint])
         // AutoLayout End ----------------------
         
-        // GetAPIButtonを設置
-        btnAPI.setTitle("Get API", forState: UIControlState.Normal)
-        btnAPI.backgroundColor = UIColor.cyanColor()
-        btnAPI.layer.cornerRadius = 10
-        btnAPI.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        btnAPI.layer.position = CGPoint(x: 100, y: 100)
-        btnAPI.addTarget(self, action: "onClickGetAPI", forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(btnAPI)
-        
         // Title
         titleLabel.text = "Title"
         titleLabel.textColor = UIColor.cyanColor()
@@ -188,12 +159,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         // インスタンスを破棄
         lm  = nil
     }
-    
-    func onClickGetAPI() {
-        // getData("http://express.heartrails.com/api/json?method=getPrefectures");
-        postData("http://localhost:8124/", user: "TESTUSER", latitude: 12.0, longitude: 34.0);
-    }
-    
+
     func postData(hostAddress : String, user : String, latitude : Double, longitude : Double) {
         
         let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
@@ -209,53 +175,5 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
 
         let myTask:NSURLSessionDataTask = mySession.dataTaskWithRequest(myRequest)
         myTask.resume()
-    }
-    
-    
-    // 通信が終了したときに呼び出されるデリゲート.
-    func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
-        
-        // 帰ってきたデータを文字列に変換.
-        let myData:NSString = NSString(data: data, encoding: NSUTF8StringEncoding)!
-        
-        // バックグラウンドだとUIの処理が出来ないので、メインスレッドでUIの処理を行わせる.
-        dispatch_async(dispatch_get_main_queue(), {
-            print("test \(myData as String)");
-        })
-        
-    }
-    
-    // API取得の開始処理
-    func getData(hostAddress : String) {
-        let url: NSURL = NSURL(string: hostAddress)!
-        // let req = NSURLRequest(URL: url)
-        let session = NSURLSession.sharedSession()
-        
-        let task = session.dataTaskWithURL(url, completionHandler: { data, response, error in
-
-            do {
-                // JSONデータを辞書に変換する
-                let dict = try NSJSONSerialization.JSONObjectWithData(data!,
-                    options: NSJSONReadingOptions.MutableContainers) as! NSDictionary
-                
-                // /response/prefecture を取得する
-                guard let response = dict["response"] as? NSDictionary else {return}
-                let test: NSArray = response["prefecture"] as! NSArray
-                for var i=0 ; i < test.count ; i++ {
-                    print("prefecture: \(test[i])")
-                }
-            } catch {}
-
-            print("data: \(data)")
-            print("response: \(response)")
-            print("error: \(error)")
-        })
-        task.resume()
-        
-        // メインスレッドにスイッチする
-        dispatch_async(dispatch_get_main_queue(), {
-
-        }) //in complitionHandler
-        
     }
 }

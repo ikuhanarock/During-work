@@ -51,7 +51,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         btn.layer.cornerRadius = 10
         btn.setTitleColor(UIColor.cyanColor(), forState: .Normal)
         btn.layer.position = CGPoint(x: 100, y: 100)
-        btn.addTarget(self, action: "onClick", forControlEvents: UIControlEvents.TouchUpInside)
+        btn.addTarget(self, action: "onClickSettings", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(btn)
         
         // AutoLayout ----------------------
@@ -81,7 +81,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         myButton.layer.masksToBounds = true
         myButton.setTitle("Get", forState: .Normal)
         myButton.layer.cornerRadius = 25.0
-        myButton.addTarget(self, action: "onClickMyButton:", forControlEvents: .TouchUpInside)
+        myButton.addTarget(self, action: "onClickGetCurrentLocation:", forControlEvents: .TouchUpInside)
 
         // AutoLayout ----------------------
         myButton.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
@@ -173,7 +173,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     }
     
     // buttonをタップしたときのアクション
-    func onClick() {
+    func onClickSettings() {
         let rootViewViewController = SecondViewController()
         rootViewViewController.delegate = self
         let second:SecondViewController = rootViewViewController
@@ -182,8 +182,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         lm = nil
     }
     
-    // ボタンイベントのセット.
-    func onClickMyButton(sender: UIButton){
+    // 現在地取得ボタン
+    func onClickGetCurrentLocation(sender: UIButton){
         
         // 現在地の取得
         if lm == nil {

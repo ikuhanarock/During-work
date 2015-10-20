@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Map
 //
-//  Created by UCHIDAYUTA on 2015/15/5.
+//  Created by UCHIDAYUTA on 2015/5/15.
 //  Copyright (c) 2015 YUT. All rights reserved.
 //
 

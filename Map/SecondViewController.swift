@@ -14,6 +14,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var delegate: ViewControllerDelegate!
     
     var lm: CLLocationManager!
+    var timer: NSTimer!
     
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
     let btnAPI = UIButton(frame: CGRectMake(20, 0, 100, 30))
@@ -24,16 +25,47 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var targetLongitude: Double = 0.0
     var isUpdatingLocation: Bool = false
     
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initView()
         
+        NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
+        
+//        if lm == nil {
+//            lm = CLLocationManager()
+//            lm.delegate = self
+//            
+//            // 位置情報取得の許可を求めるメッセージの表示．必須．
+//            lm.requestAlwaysAuthorization()
+//            
+//            //位置情報取得の可否。バックグラウンドで実行中の場合にもアプリが位置情報を利用することを許可する
+//            lm.requestAlwaysAuthorization()
+//            
+//            // GPSの使用を開始する
+//            lm.startUpdatingLocation()
+//            lm.desiredAccuracy = kCLLocationAccuracyBest
+//            // lm.distanceFilter = 200
+//            lm.activityType = CLActivityType.Fitness
+//            isUpdatingLocation = true
+//        }
+        
+        // ターゲットの位置情報を読み込む
+        targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
+        targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
+    }
+    
+    func onUpdate() {
         if lm == nil {
             lm = CLLocationManager()
             lm.delegate = self
             
             // 位置情報取得の許可を求めるメッセージの表示．必須．
+            lm.requestAlwaysAuthorization()
+            
+            //位置情報取得の可否。バックグラウンドで実行中の場合にもアプリが位置情報を利用することを許可する
             lm.requestAlwaysAuthorization()
             
             // GPSの使用を開始する
@@ -43,10 +75,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
             lm.activityType = CLActivityType.Fitness
             isUpdatingLocation = true
         }
-        
-        // ターゲットの位置情報を読み込む
-        targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
-        targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
     }
     
     func initView() -> Void {
@@ -135,6 +163,9 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         logLabel.text = log!
         postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
         self.view.addSubview(logLabel);
+        
+        lm.stopUpdatingLocation()
+        lm  = nil
     }
     
     /* 位置情報取得失敗時に実行される関数 */
@@ -142,6 +173,9 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         
         logLabel.text = logLabel.text! + function1().FormatLocationLog(nil, longitude: nil)
         self.view.addSubview(logLabel);
+        
+        lm.stopUpdatingLocation()
+        lm  = nil
     }
     
     func onClickBack() {
@@ -177,9 +211,8 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         myTask.resume()
     }
     
-    /*
-    通信が終了したときに呼び出されるデリゲート.
-    */
+    
+    // 通信が終了したときに呼び出されるデリゲート.
     func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
         
         // 帰ってきたデータを文字列に変換.

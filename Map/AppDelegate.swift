@@ -15,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var window: UIWindow?
     var lm: CLLocationManager!
     
+    var timer: NSTimer!
+    
     var targetLatitude: Double = 0.0
     var targetLongitude: Double = 0.0
 

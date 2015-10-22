@@ -15,8 +15,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var lm: CLLocationManager!
     
-    var timer: NSTimer!
-    
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
     let btnAPI = UIButton(frame: CGRectMake(20, 0, 100, 30))
     var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
@@ -29,7 +27,9 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         
         initView()
         
-        NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
+        if appDelegate.timer == nil {
+            appDelegate.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
+        }
         
         // ターゲットの位置情報を読み込む
         appDelegate.targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")

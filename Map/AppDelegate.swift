@@ -10,9 +10,13 @@ import UIKit
 import CoreLocation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
+    
     var window: UIWindow?
+    var lm: CLLocationManager!
+    
+    var targetLatitude: Double = 0.0
+    var targetLongitude: Double = 0.0
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -48,6 +52,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    /* 位置情報取得成功時に実行される関数 */
+    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation){
+        
+        let latitude = newLocation.coordinate.latitude;
+        let longitude = newLocation.coordinate.longitude;
+        
+        if function1().locationToMeter(latitude, latitude2: targetLatitude, longitude1: longitude, longitude2: targetLongitude) > 200 {
+            return
+        }
+        
+        // var log: String? = logLabel.text!
+        
+//        var log = function1().FormatLocationLog(latitude, longitude:longitude)
+//        NSLog(log)
+        // logLabel.text = log!
+        postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
+        // self.view.addSubview(logLabel);
+        
+        lm.stopUpdatingLocation()
+        lm  = nil
+    }
+    
+    /* 位置情報取得失敗時に実行される関数 */
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        
+        NSLog("失敗しました。")
+        
+        lm.stopUpdatingLocation()
+        lm  = nil
+    }
 
+    func postData(hostAddress : String, user : String, latitude : Double, longitude : Double) {
+        
+        let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
+        let mySession:NSURLSession = NSURLSession(configuration: myConfig)
+        let myUrl:NSURL = NSURL(string: hostAddress)!
+        
+        let myRequest:NSMutableURLRequest = NSMutableURLRequest(URL: myUrl)
+        myRequest.HTTPMethod = "POST"
+        
+        let str:NSString = "{ \"user\" : \" \(user) \", \"latitude\": \(latitude) , \"longitude\": \(longitude) }"
+        let myData:NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
+        myRequest.HTTPBody = myData
+        
+        let myTask:NSURLSessionDataTask = mySession.dataTaskWithRequest(myRequest)
+        myTask.resume()
+    }
 }
 

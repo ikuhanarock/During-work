@@ -12,8 +12,9 @@ import CoreLocation
 class SecondViewController: UIViewController, CLLocationManagerDelegate {
     
     var delegate: ViewControllerDelegate!
-    
+    let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var lm: CLLocationManager!
+    
     var timer: NSTimer!
     
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
@@ -21,8 +22,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
     var logLabel = UILabel(frame: CGRectMake(0, 00, 00, 00))
     
-    var targetLatitude: Double = 0.0
-    var targetLongitude: Double = 0.0
     var isUpdatingLocation: Bool = false
     
     override func viewDidLoad() {
@@ -33,26 +32,26 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
         
         // ターゲットの位置情報を読み込む
-        targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
-        targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
+        appDelegate.targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
+        appDelegate.targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
     }
     
     func onUpdate() {
-        if lm == nil {
-            lm = CLLocationManager()
-            lm.delegate = self
+        if appDelegate.lm == nil {
+            appDelegate.lm = CLLocationManager()
+            appDelegate.lm.delegate = appDelegate
             
             // 位置情報取得の許可を求めるメッセージの表示．必須．
-            lm.requestAlwaysAuthorization()
+            appDelegate.lm.requestAlwaysAuthorization()
             
             //位置情報取得の可否。バックグラウンドで実行中の場合にもアプリが位置情報を利用することを許可する
-            lm.requestAlwaysAuthorization()
+            appDelegate.lm.requestAlwaysAuthorization()
             
             // GPSの使用を開始する
-            lm.startUpdatingLocation()
-            lm.desiredAccuracy = kCLLocationAccuracyBest
+            appDelegate.lm.startUpdatingLocation()
+            appDelegate.lm.desiredAccuracy = kCLLocationAccuracyBest
             // lm.distanceFilter = 200
-            lm.activityType = CLActivityType.Fitness
+            appDelegate.lm.activityType = CLActivityType.Fitness
             isUpdatingLocation = true
         }
     }
@@ -118,37 +117,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    /* 位置情報取得成功時に実行される関数 */
-    func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation){
-        
-        let latitude = newLocation.coordinate.latitude;
-        let longitude = newLocation.coordinate.longitude;
-        
-        if function1().locationToMeter(latitude, latitude2: targetLatitude, longitude1: longitude, longitude2: targetLongitude) > 200 {
-            return
-        }
-        
-        var log: String? = logLabel.text!
-        
-        log = log! + function1().FormatLocationLog(latitude, longitude:longitude)
-        logLabel.text = log!
-        postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
-        self.view.addSubview(logLabel);
-        
-        lm.stopUpdatingLocation()
-        lm  = nil
-    }
-    
-    /* 位置情報取得失敗時に実行される関数 */
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        
-        logLabel.text = logLabel.text! + function1().FormatLocationLog(nil, longitude: nil)
-        self.view.addSubview(logLabel);
-        
-        lm.stopUpdatingLocation()
-        lm  = nil
-    }
-    
     func onClickBack() {
         self.dismissViewControllerAnimated(true, completion: {self.delegate.initView()})
         
@@ -157,23 +125,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         NSUserDefaults.standardUserDefaults().synchronize();
         
         // インスタンスを破棄
-        lm  = nil
-    }
-
-    func postData(hostAddress : String, user : String, latitude : Double, longitude : Double) {
-        
-        let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
-        let mySession:NSURLSession = NSURLSession(configuration: myConfig)
-        let myUrl:NSURL = NSURL(string: hostAddress)!
-
-        let myRequest:NSMutableURLRequest = NSMutableURLRequest(URL: myUrl)
-        myRequest.HTTPMethod = "POST"
-        
-        let str:NSString = "{ \"user\" : \" \(user) \", \"latitude\": \(latitude) , \"longitude\": \(longitude) }"
-        let myData:NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
-        myRequest.HTTPBody = myData
-
-        let myTask:NSURLSessionDataTask = mySession.dataTaskWithRequest(myRequest)
-        myTask.resume()
+        appDelegate.lm  = nil
     }
 }

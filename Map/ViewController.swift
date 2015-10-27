@@ -20,7 +20,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     var latitude: CLLocationDegrees!
     var longitude: CLLocationDegrees!
-    let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
+    var infoBtn: UIButton!
+    var getLocationBtn: UIButton!
     
     //マップ
     var mapView: MKMapView = MKMapView()
@@ -45,26 +46,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     func initView() -> Void {
 
-        // 設定ボタン
-        btn.setTitle("Settings", forState: UIControlState.Normal)
-        btn.backgroundColor = UIColor.whiteColor()
-        btn.layer.cornerRadius = 10
-        btn.setTitleColor(UIColor.cyanColor(), forState: .Normal)
-        btn.layer.position = CGPoint(x: 100, y: 100)
-        btn.addTarget(self, action: "onClickSettings", forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(btn)
+        // infoボタン
+        infoBtn = UIButton(type: UIButtonType.InfoDark)
+        infoBtn.addTarget(self, action: "onClickSettings", forControlEvents: UIControlEvents.TouchUpInside)
         
-        // AutoLayout ----------------------
-        btn.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
-        self.view.addSubview(btn);
+        // AutoLayout Start ----------------------
+        infoBtn.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
+        self.view.addSubview(infoBtn)
         
-        var btnsDictionary = [String: AnyObject]()
-        btnsDictionary["top_hogehoge"] = btn
-        let btn_constraint_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("|-8-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
-        let btn_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
-        
-        view.addConstraints(btn_constraint_1 as! [NSLayoutConstraint])
-        view.addConstraints(btn_constraint_2 as! [NSLayoutConstraint])
+        view.addConstraints([
+            
+            NSLayoutConstraint(
+                item: infoBtn,
+                attribute: .Right,
+                relatedBy: .Equal,
+                toItem: self.view,
+                attribute: .Right,
+                multiplier: 1.0,
+                constant: -10
+            ),
+            
+            NSLayoutConstraint(
+                item: infoBtn,
+                attribute: .Top,
+                relatedBy: .Equal,
+                toItem: self.view,
+                attribute: .Top,
+                multiplier: 1.0,
+                constant: 30
+            )]
+        )
+
+        self.view.addSubview(infoBtn);
         // AutoLayout End ----------------------
         
         // マップ
@@ -73,75 +86,63 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.view.addSubview(self.mapView)
         
         // ボタンを前面に移動
-        self.view.bringSubviewToFront(btn)
+        self.view.bringSubviewToFront(infoBtn)
         
         // 現在地取得ボタンの生成.
-        let myButton = UIButton()
-        myButton.backgroundColor = UIColor.orangeColor()
-        myButton.layer.masksToBounds = true
-        myButton.setTitle("Get", forState: .Normal)
-        myButton.layer.cornerRadius = 25.0
-        myButton.addTarget(self, action: "onClickGetCurrentLocation:", forControlEvents: .TouchUpInside)
+        getLocationBtn = UIButton(frame: CGRectMake(0, 0, 50, 50))
+        getLocationBtn.backgroundColor = UIColor.orangeColor()
+        getLocationBtn.layer.masksToBounds = true
+        getLocationBtn.setTitle("Get", forState: .Normal)
+        getLocationBtn.layer.cornerRadius = 25.0
+        getLocationBtn.addTarget(self, action: "onClickGetCurrentLocation:", forControlEvents: .TouchUpInside)
 
-        // AutoLayout ----------------------
-        myButton.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
-        self.view.addSubview(myButton);
-  
-        var btnsDictionary2 = [String: AnyObject]()
-        btnsDictionary2["top_hogehoge"] = myButton
-        let btn_constraint2_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("H:|-8-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary2)
-        let btn_constraint2_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary2)
-        
-        view.addConstraints(btn_constraint2_1 as! [NSLayoutConstraint])
-        view.addConstraints(btn_constraint2_2 as! [NSLayoutConstraint])
+        // AutoLayout Start ----------------------
+        getLocationBtn.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
+        self.view.addSubview(getLocationBtn);
         
         view.addConstraints([
             
-            // centerViewの右から20pxのところに配置
             NSLayoutConstraint(
-                item: myButton,
-                attribute: NSLayoutAttribute.Left,
-                relatedBy: NSLayoutRelation.Equal,
+                item: getLocationBtn,
+                attribute: .Left,
+                relatedBy: .Equal,
                 toItem: self.view,
-                attribute: NSLayoutAttribute.Right,
+                attribute: .Left,
                 multiplier: 1.0,
                 constant: 8
             ),
             
-            // center.yはcenterViewと同じ
             NSLayoutConstraint(
-                item: myButton,
-                attribute: NSLayoutAttribute.Bottom,
-                relatedBy: NSLayoutRelation.Equal,
+                item: getLocationBtn,
+                attribute: .Bottom,
+                relatedBy: .Equal,
                 toItem: self.view,
-                attribute: .CenterY,
+                attribute: .Bottom,
                 multiplier: 1.0,
-                constant: 8
+                constant: -8
             ),
             
-            // 横（固定）
             NSLayoutConstraint(
-                item: myButton,
-                attribute: NSLayoutAttribute.Width,
-                relatedBy: NSLayoutRelation.Equal,
+                item: getLocationBtn,
+                attribute: .Width,
+                relatedBy: .Equal,
                 toItem: nil,
-                attribute: NSLayoutAttribute.Width,
+                attribute: .Width,
                 multiplier: 1.0,
                 constant: 50
             ),
             
-            // 縦（固定）
             NSLayoutConstraint(
-                item: myButton,
-                attribute: NSLayoutAttribute.Height,
-                relatedBy: NSLayoutRelation.Equal,
+                item: getLocationBtn,
+                attribute: .Height,
+                relatedBy: .Equal,
                 toItem: nil,
-                attribute: NSLayoutAttribute.Height,
+                attribute: .Height,
                 multiplier: 1.0,
                 constant: 50
             )]
         )
-        self.view.addSubview(myButton)
+        self.view.addSubview(getLocationBtn)
         // AutoLayout End ----------------------
     }
     

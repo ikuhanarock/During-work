@@ -63,7 +63,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 toItem: self.view,
                 attribute: .Right,
                 multiplier: 1.0,
-                constant: -10
+                constant: -20
             ),
             
             NSLayoutConstraint(

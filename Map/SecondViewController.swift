@@ -16,9 +16,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var lm: CLLocationManager!
     
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
-    let btnAPI = UIButton(frame: CGRectMake(20, 0, 100, 30))
     var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
-    var logLabel = UILabel(frame: CGRectMake(0, 00, 00, 00))
     
     var isUpdatingLocation: Bool = false
     
@@ -59,55 +57,65 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     func initView() -> Void {
         self.view.backgroundColor = UIColor.whiteColor()
         
-        logLabel.layer.borderWidth = 0.5;
-        logLabel.numberOfLines = 0;
-        
-        let log:String? = NSUserDefaults.standardUserDefaults().stringForKey("logKey");
-        
-        if log != nil {
-            logLabel.text = log;
-        } else {
-            logLabel.text = ""
-        }
-        self.view.addSubview(logLabel);
-        
-        // AutoLayout ----------------------
-        logLabel.translatesAutoresizingMaskIntoConstraints = false; //Autolayoutの時はここはfalse
-        self.view.addSubview(logLabel);
-        
-        var viewsDictionary = [String: AnyObject]()
-        viewsDictionary["top_hogehoge"] = logLabel
-        let label_constraint_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("|-8-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: viewsDictionary)
-        let label_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-110-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: viewsDictionary)
-        
-        view.addConstraints(label_constraint_1 as! [NSLayoutConstraint])
-        view.addConstraints(label_constraint_2 as! [NSLayoutConstraint])
-        // AutoLayout End ----------------------
-        
         // BackButtonを設置
-        btn.setTitle("Back", forState: UIControlState.Normal)
+        btn.setTitle("Done", forState: UIControlState.Normal)
         btn.backgroundColor = UIColor.cyanColor()
         btn.layer.cornerRadius = 10
         btn.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         btn.layer.position = CGPoint(x: 100, y: 100)
         btn.addTarget(self, action: "onClickBack", forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(btn)
         
         // AutoLayout ----------------------
         btn.translatesAutoresizingMaskIntoConstraints = false;
         self.view.addSubview(btn);
         
-        var btnsDictionary = [String: AnyObject]()
-        btnsDictionary["top_hogehoge"] = btn
-        let btn_constraint_1:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("|-8-[top_hogehoge]-8-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
-        let btn_constraint_2:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-30-[top_hogehoge]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: btnsDictionary)
-        
-        view.addConstraints(btn_constraint_1 as! [NSLayoutConstraint])
-        view.addConstraints(btn_constraint_2 as! [NSLayoutConstraint])
+        view.addConstraints([
+            
+            NSLayoutConstraint(
+                item: btn,
+                attribute: .Right,
+                relatedBy: .Equal,
+                toItem: self.view,
+                attribute: .Right,
+                multiplier: 1.0,
+                constant: -8
+            ),
+            
+            NSLayoutConstraint(
+                item: btn,
+                attribute: .Top,
+                relatedBy: .Equal,
+                toItem: self.view,
+                attribute: .Top,
+                multiplier: 1.0,
+                constant: 20
+            ),
+            
+            NSLayoutConstraint(
+                item: btn,
+                attribute: .Width,
+                relatedBy: .Equal,
+                toItem: nil,
+                attribute: .Width,
+                multiplier: 1.0,
+                constant: 50
+            ),
+            
+            NSLayoutConstraint(
+                item: btn,
+                attribute: .Height,
+                relatedBy: .Equal,
+                toItem: nil,
+                attribute: .Height,
+                multiplier: 1.0,
+                constant: 40
+            )]
+        )
+        self.view.addSubview(btn);
         // AutoLayout End ----------------------
         
         // Title
-        titleLabel.text = "Title"
+        titleLabel.text = "Info"
         titleLabel.textColor = UIColor.cyanColor()
         self.view.addSubview(titleLabel);
     }
@@ -119,10 +127,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     
     func onClickBack() {
         self.dismissViewControllerAnimated(true, completion: {self.delegate.initView()})
-        
-        // 保存
-        NSUserDefaults.standardUserDefaults().setObject(logLabel.text, forKey:"logKey");
-        NSUserDefaults.standardUserDefaults().synchronize();
         
         // インスタンスを破棄
         appDelegate.lm  = nil

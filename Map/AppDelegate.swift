@@ -17,16 +17,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     var timer: NSTimer!
     
-    var targetLatitude: Double = 0.0
-    var targetLongitude: Double = 0.0
+    var targetLatitude: Double? = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
+    var targetLongitude: Double? = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
+    
+    let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
+    var mySession:NSURLSession? = nil
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
         // NSUserDefaultsの初期化
-        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLatitudeKey");
-        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLongitudeKey");
-        NSUserDefaults.standardUserDefaults().synchronize();
+//        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLatitudeKey");
+//        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLongitudeKey");
+//        NSUserDefaults.standardUserDefaults().synchronize();
         
         return true
     }
@@ -59,14 +62,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         let latitude = newLocation.coordinate.latitude;
         let longitude = newLocation.coordinate.longitude;
         
-        if function1().locationToMeter(latitude, latitude2: targetLatitude, longitude1: longitude, longitude2: targetLongitude) > 200 {
+        if function1().locationToMeter(latitude, latitude2: targetLatitude!, longitude1: longitude, longitude2: targetLongitude!) > 200 {
             return
         }
         
         // var log: String? = logLabel.text!
         
-//        var log = function1().FormatLocationLog(latitude, longitude:longitude)
-//        NSLog(log)
+        let log = function1().FormatLocationLog(latitude, longitude:longitude)
+        NSLog(log)
         // logLabel.text = log!
         postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
         // self.view.addSubview(logLabel);
@@ -83,11 +86,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         lm.stopUpdatingLocation()
         lm  = nil
     }
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        switch status {
+        case .NotDetermined:
+            if lm.respondsToSelector("requestWhenInUseAuthorization") { lm.requestWhenInUseAuthorization() }
+        case .Restricted, .Denied:
+            break
+        case .Authorized, .AuthorizedWhenInUse:
+            break
+        }
+    }
 
     func postData(hostAddress : String, user : String, latitude : Double, longitude : Double) {
         
-        let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
-        let mySession:NSURLSession = NSURLSession(configuration: myConfig)
+        if mySession == nil {
+            mySession = NSURLSession(configuration: myConfig)
+        }
+
         let myUrl:NSURL = NSURL(string: hostAddress)!
         
         let myRequest:NSMutableURLRequest = NSMutableURLRequest(URL: myUrl)
@@ -97,7 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         let myData:NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
         myRequest.HTTPBody = myData
         
-        let myTask:NSURLSessionDataTask = mySession.dataTaskWithRequest(myRequest)
+        let myTask:NSURLSessionDataTask = mySession!.dataTaskWithRequest(myRequest)
         myTask.resume()
     }
 }

@@ -21,19 +21,20 @@ class function1 {
         let time = dateFormatter.stringFromDate(now)
         
         if latitude != nil && longitude != nil {
-            NSLog("緯度: \(latitude) , 経度: \(longitude)")
             return "\(time) latiitude: \(latitude) , longitude: \(longitude) \n"
         } else {
             let errMsg = "位置情報の取得に失敗しました。\n"
-            NSLog(errMsg)
             return "\(time) \(errMsg)"
         }
     }
     
-    func locationToMeter(latitude1: CLLocationDegrees, latitude2: CLLocationDegrees, longitude1: CLLocationDegrees, longitude2: CLLocationDegrees)-> uint {
+    func locationToMeter(latitude1: CLLocationDegrees, latitude2: CLLocationDegrees?, longitude1: CLLocationDegrees, longitude2: CLLocationDegrees?)-> uint {
         
-        let meter1 = pow((latitude1 - latitude2) / 0.0111, 2.0)
-        let meter2 = pow((longitude1 - longitude2) / 0.0091, 2.0)
+        let latitude3 = latitude2 ?? 0.0
+        let longitude3 = longitude2 ?? 0.0
+        
+        let meter1 = pow((latitude1 - latitude3) / 0.0111, 2.0)
+        let meter2 = pow((longitude1 - longitude3) / 0.0091, 2.0)
         let meter = sqrt(meter1 + meter2) * 1000
         return UInt32(meter)
     }

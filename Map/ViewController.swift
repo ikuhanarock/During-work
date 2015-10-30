@@ -18,32 +18,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     var lm: CLLocationManager!
     
+    let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
     var latitude: CLLocationDegrees!
     var longitude: CLLocationDegrees!
     var infoBtn: UIButton!
     var getLocationBtn: UIButton!
     
-    //マップ
     var mapView: MKMapView = MKMapView()
-    //長押し検知器
     var longtapGesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 画面の初期化
         initView()
         
         longitude = CLLocationDegrees()
         latitude = CLLocationDegrees()
         
-        // 長押し検知器の設定
-        // 長押し時に呼びだすメソッド
+        // ターゲットの位置情報を読み込む
+        appDelegate.targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
+        appDelegate.targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
+        
+        latitude = appDelegate.targetLatitude
+        longitude = appDelegate.targetLongitude
+        
+        let mapPoint:CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitude,longitude)
+        dropPin(mapPoint)
+
         self.longtapGesture.addTarget(self, action: "longPressed:")
-        // マップに長押し検知器を追加
         self.mapView.addGestureRecognizer(self.longtapGesture)
     }
     
+    // 画面の初期化
     func initView() -> Void {
 
         // infoボタン
@@ -51,7 +58,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         infoBtn.addTarget(self, action: "onClickSettings", forControlEvents: UIControlEvents.TouchUpInside)
         
         // AutoLayout Start ----------------------
-        infoBtn.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
+        infoBtn.translatesAutoresizingMaskIntoConstraints = false;
         self.view.addSubview(infoBtn)
         
         view.addConstraints([
@@ -97,7 +104,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         getLocationBtn.addTarget(self, action: "onClickGetCurrentLocation:", forControlEvents: .TouchUpInside)
 
         // AutoLayout Start ----------------------
-        getLocationBtn.translatesAutoresizingMaskIntoConstraints = false;    //Autolayoutの時はここはfalse
+        getLocationBtn.translatesAutoresizingMaskIntoConstraints = false;
         self.view.addSubview(getLocationBtn);
         
         view.addConstraints([
@@ -150,18 +157,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         super.didReceiveMemoryWarning()
     }
     
-    func longPressed(sender: UILongPressGestureRecognizer){
-        
-        // 指を離したときだけ反応するようにする
-        if(sender.state != .Began){
-            return
-        }
-        
-        let location = sender.locationInView(self.mapView)
-        let mapPoint:CLLocationCoordinate2D = self.mapView.convertPoint(location, toCoordinateFromView: self.mapView)
-        dropPin(mapPoint)
-    }
-    
     override func viewDidAppear(animated: Bool) {
         
         // 端末の向きがかわったらNotificationを呼ばす設定.
@@ -173,20 +168,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         initView()
     }
     
-    // buttonをタップしたときのアクション
     func onClickSettings() {
         let rootViewViewController = SecondViewController()
         rootViewViewController.delegate = self
         let second:SecondViewController = rootViewViewController
         self.presentViewController(second, animated: true, completion: nil)
         
-        lm = nil
+        //lm = nil
     }
     
     // 現在地取得ボタン
     func onClickGetCurrentLocation(sender: UIButton){
         
-        // 現在地の取得
         if lm == nil {
             lm = CLLocationManager()
             lm.delegate = self
@@ -201,7 +194,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             lm.distanceFilter = 100
         }
         
-        // 現在位置の取得を開始.
         lm.startUpdatingLocation()
     }
     
@@ -224,11 +216,37 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         dropPin(mapPoint)
         
         lm.stopUpdatingLocation()
+        lm = nil
     }
     
     // 位置情報取得に失敗した時に呼び出されるデリゲート.
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("error")
+    }
+    
+    func longPressed(sender: UILongPressGestureRecognizer){
+        
+        // 指を離したときだけ反応するようにする
+        if(sender.state != .Began){
+            return
+        }
+        
+        let location = sender.locationInView(self.mapView)
+        let mapPoint:CLLocationCoordinate2D = self.mapView.convertPoint(location, toCoordinateFromView: self.mapView)
+        
+        // アラート表示
+        let alertController = UIAlertController(title: "現場の変更", message: "現場を変更してもよろしいでしょうか？", preferredStyle: .Alert)
+        let otherAction = UIAlertAction(title: "OK", style: .Default) {
+            action in self.dropPin(mapPoint)
+        }
+        let cancelAction = UIAlertAction(title: "CANCEL", style: .Cancel) {
+            action in return
+        }
+        
+        alertController.addAction(otherAction)
+        alertController.addAction(cancelAction)
+        presentViewController(alertController, animated: true, completion: nil)
+
     }
     
     func dropPin(mapPoint: CLLocationCoordinate2D) {
@@ -244,11 +262,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // 位置情報を保存
         NSUserDefaults.standardUserDefaults().setObject(mapPoint.latitude, forKey:"targetLatitudeKey")
         NSUserDefaults.standardUserDefaults().setObject(mapPoint.longitude, forKey:"targetLongitudeKey")
-        
-        // ログをリセット
-        NSUserDefaults.standardUserDefaults().setObject("", forKey:"logKey");
-        
         NSUserDefaults.standardUserDefaults().synchronize()
+        
+        appDelegate.targetLatitude = mapPoint.latitude
+        appDelegate.targetLongitude = mapPoint.longitude
+        
+        if appDelegate.timer == nil {
+            appDelegate.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
+        }
+        
     }
 
+    func onUpdate() {
+        if appDelegate.lm == nil {
+            appDelegate.lm = CLLocationManager()
+            appDelegate.lm.delegate = appDelegate
+            
+            // 位置情報取得の許可を求めるメッセージの表示．必須．
+            // appDelegate.lm.requestAlwaysAuthorization()
+            
+            //位置情報取得の可否。バックグラウンドで実行中の場合にもアプリが位置情報を利用することを許可する
+            appDelegate.lm.requestAlwaysAuthorization()
+            
+            appDelegate.lm.startUpdatingLocation()
+            appDelegate.lm.desiredAccuracy = kCLLocationAccuracyBest
+            // lm.distanceFilter = 200
+            appDelegate.lm.activityType = CLActivityType.Fitness
+        }
+    }
 }

@@ -18,40 +18,14 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     let btn = UIButton(frame: CGRectMake(0, 0, 100, 30))
     var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
     
-    var isUpdatingLocation: Bool = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initView()
         
-        if appDelegate.timer == nil {
-            appDelegate.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdate"), userInfo: nil, repeats: true)
-        }
-        
         // ターゲットの位置情報を読み込む
         appDelegate.targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
         appDelegate.targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
-    }
-    
-    func onUpdate() {
-        if appDelegate.lm == nil {
-            appDelegate.lm = CLLocationManager()
-            appDelegate.lm.delegate = appDelegate
-            
-            // 位置情報取得の許可を求めるメッセージの表示．必須．
-            appDelegate.lm.requestAlwaysAuthorization()
-            
-            //位置情報取得の可否。バックグラウンドで実行中の場合にもアプリが位置情報を利用することを許可する
-            appDelegate.lm.requestAlwaysAuthorization()
-            
-            // GPSの使用を開始する
-            appDelegate.lm.startUpdatingLocation()
-            appDelegate.lm.desiredAccuracy = kCLLocationAccuracyBest
-            // lm.distanceFilter = 200
-            appDelegate.lm.activityType = CLActivityType.Fitness
-            isUpdatingLocation = true
-        }
     }
     
     func initView() -> Void {
@@ -129,6 +103,6 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         self.dismissViewControllerAnimated(true, completion: {self.delegate.initView()})
         
         // インスタンスを破棄
-        appDelegate.lm  = nil
+        // appDelegate.lm  = nil
     }
 }

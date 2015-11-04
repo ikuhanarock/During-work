@@ -9,7 +9,7 @@
 import Foundation
 import MapKit
 
-class function1 {
+class PublicFunctions {
     
     func FormatLocationLog(latitude: CLLocationDegrees!, longitude: CLLocationDegrees!)-> String {
         

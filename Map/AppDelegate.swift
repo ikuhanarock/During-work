@@ -26,11 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        // NSUserDefaultsの初期化
-//        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLatitudeKey");
-//        NSUserDefaults.standardUserDefaults().setObject(0.0, forKey:"targetLongitudeKey");
-//        NSUserDefaults.standardUserDefaults().synchronize();
-        
         return true
     }
 
@@ -56,32 +51,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-    /* 位置情報取得成功時に実行される関数 */
     func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation){
         
         let latitude = newLocation.coordinate.latitude;
         let longitude = newLocation.coordinate.longitude;
         
-        if function1().locationToMeter(latitude, latitude2: targetLatitude!, longitude1: longitude, longitude2: targetLongitude!) > 200 {
+        if PublicFunctions().locationToMeter(latitude, latitude2: targetLatitude!, longitude1: longitude, longitude2: targetLongitude!) > 200 {
             return
         }
         
-        // var log: String? = logLabel.text!
-        
-        let log = function1().FormatLocationLog(latitude, longitude:longitude)
+        let log = PublicFunctions().FormatLocationLog(latitude, longitude:longitude)
         NSLog(log)
-        // logLabel.text = log!
+
         postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
-        // self.view.addSubview(logLabel);
         
         lm.stopUpdatingLocation()
         lm  = nil
     }
     
-    /* 位置情報取得失敗時に実行される関数 */
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         
-        NSLog("失敗しました。")
+        NSLog("位置情報の取得に失敗しました。")
         
         lm.stopUpdatingLocation()
         lm  = nil

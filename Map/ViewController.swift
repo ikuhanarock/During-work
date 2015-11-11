@@ -35,11 +35,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         initView()
         
         // 現場の位置を読み込んでピンをドロップする
-        appDelegate.targetLatitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
-        appDelegate.targetLongitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
+        appDelegate.targetLocation.latitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
+        appDelegate.targetLocation.longitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
         
-        latitude = appDelegate.targetLatitude
-        longitude = appDelegate.targetLongitude
+        latitude = appDelegate.targetLocation.latitude
+        longitude = appDelegate.targetLocation.longitude
         
         let mapPoint:CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitude,longitude)
         dropPin(mapPoint)
@@ -179,8 +179,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         NSUserDefaults.standardUserDefaults().setObject(mapPoint.longitude, forKey:"targetLongitudeKey")
         NSUserDefaults.standardUserDefaults().synchronize()
         
-        appDelegate.targetLatitude = mapPoint.latitude
-        appDelegate.targetLongitude = mapPoint.longitude
+        appDelegate.targetLocation.latitude = mapPoint.latitude
+        appDelegate.targetLocation.longitude = mapPoint.longitude
         
         if appDelegate.timer == nil {
             appDelegate.timer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: Selector("onUpdateLocation"), userInfo: nil, repeats: true)

@@ -17,8 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     var timer: NSTimer!
     
-    var targetLatitude: Double? = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
-    var targetLongitude: Double? = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
+    let targetLocation = TargetLocation(latitude: NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey"),
+                                        longitude: NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey"))
     
     let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
     var mySession:NSURLSession? = nil
@@ -56,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         let latitude = newLocation.coordinate.latitude;
         let longitude = newLocation.coordinate.longitude;
         
-        if PublicFunctions().locationToMeter(latitude, latitude2: targetLatitude!, longitude1: longitude, longitude2: targetLongitude!) > 200 {
+        if PublicFunctions().locationToMeter(latitude, latitude2: targetLocation.latitude, longitude1: longitude, longitude2: targetLocation.longitude) > 200 {
             return
         }
         

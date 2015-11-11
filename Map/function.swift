@@ -9,6 +9,32 @@
 import Foundation
 import MapKit
 
+class Location {
+    var name: String = "(none)"
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+    
+    init(latitude: Double?, longitude: Double?) {
+        self.name = "(none)"
+        self.latitude = latitude ?? 0.0
+        self.longitude = longitude ?? 0.0
+    }
+    
+    init(name:String, latitude: Double?, longitude: Double?) {
+        self.name = name
+        self.latitude = latitude ?? 0.0
+        self.longitude = longitude ?? 0.0
+    }
+}
+
+class CurrentLocation : Location {
+
+}
+
+class TargetLocation : Location {
+    
+}
+
 class PublicFunctions {
     
     func FormatLocationLog(latitude: CLLocationDegrees!, longitude: CLLocationDegrees!)-> String {

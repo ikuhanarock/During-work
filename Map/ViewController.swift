@@ -20,8 +20,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
-    var latitude: CLLocationDegrees!
-    var longitude: CLLocationDegrees!
     var infoBtn: UIButton!
     var getLocationBtn: UIButton!
     var viewsDictionary = [String: AnyObject]()
@@ -38,10 +36,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         appDelegate.targetLocation.latitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey")
         appDelegate.targetLocation.longitude = NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey")
         
-        latitude = appDelegate.targetLocation.latitude
-        longitude = appDelegate.targetLocation.longitude
-        
-        let mapPoint:CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitude,longitude)
+        let mapPoint:CLLocationCoordinate2D = CLLocationCoordinate2DMake(appDelegate.targetLocation.latitude,appDelegate.targetLocation.longitude)
         dropPin(mapPoint)
 
         self.longtapGesture.addTarget(self, action: "longPressed:")

@@ -28,7 +28,9 @@ class Location {
 }
 
 class CurrentLocation : Location {
-
+    override init(latitude: Double?, longitude: Double?) {
+        super.init(name: "Current Location", latitude: latitude!, longitude: longitude!)
+    }
 }
 
 class TargetLocation : Location {

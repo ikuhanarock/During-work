@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     let targetLocation = TargetLocation(latitude: NSUserDefaults.standardUserDefaults().doubleForKey("targetLatitudeKey"),
                                         longitude: NSUserDefaults.standardUserDefaults().doubleForKey("targetLongitudeKey"))
     
+    let currentLocation = CurrentLocation(latitude: 0.0, longitude: 0.0)
+    
     let myConfig:NSURLSessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("backgroundTask")
     var mySession:NSURLSession? = nil
 
@@ -53,17 +55,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation){
         
-        let latitude = newLocation.coordinate.latitude;
-        let longitude = newLocation.coordinate.longitude;
+        currentLocation.latitude = newLocation.coordinate.latitude
+        currentLocation.longitude = newLocation.coordinate.longitude;
         
-        if PublicFunctions().locationToMeter(latitude, latitude2: targetLocation.latitude, longitude1: longitude, longitude2: targetLocation.longitude) > 200 {
+        if PublicFunctions().locationToMeter(currentLocation.latitude, latitude2: targetLocation.latitude, longitude1: currentLocation.longitude, longitude2: targetLocation.longitude) > 200 {
             return
         }
         
-        let log = PublicFunctions().FormatLocationLog(latitude, longitude:longitude)
+        let log = PublicFunctions().FormatLocationLog(currentLocation.latitude, longitude: currentLocation.longitude)
         NSLog(log)
 
-        postData("http://localhost:8124/", user: "TESTUSER", latitude: latitude, longitude: longitude);
+        postData("http://localhost:8124/", user: "TESTUSER", latitude: currentLocation.latitude, longitude: currentLocation.longitude);
         
         lm.stopUpdatingLocation()
         lm  = nil

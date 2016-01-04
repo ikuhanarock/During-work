@@ -56,16 +56,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation){
         
         currentLocation.latitude = newLocation.coordinate.latitude
-        currentLocation.longitude = newLocation.coordinate.longitude;
+        currentLocation.longitude = newLocation.coordinate.longitude
         
         if PublicFunctions().locationToMeter(currentLocation.latitude, latitude2: targetLocation.latitude, longitude1: currentLocation.longitude, longitude2: targetLocation.longitude) > 200 {
             return
         }
         
-        let log = PublicFunctions().FormatLocationLog(currentLocation.latitude, longitude: currentLocation.longitude)
+        let log = PublicFunctions().formatLocationLog(currentLocation.latitude, longitude: currentLocation.longitude)
         NSLog(log)
 
-        postData("http://localhost:8124/", user: "TESTUSER", latitude: currentLocation.latitude, longitude: currentLocation.longitude);
+        postData("http://localhost:8124/", user: "TESTUSER", latitude: currentLocation.latitude, longitude: currentLocation.longitude)
         
         lm.stopUpdatingLocation()
         lm  = nil

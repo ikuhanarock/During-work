@@ -14,7 +14,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
     var delegate: ViewControllerDelegate!
     
     let btn = UIButton()
-    var titleLabel = UILabel(frame: CGRectMake(8, 80, 100, 30))
+    var titleLabel = UILabel(frame: CGRect(x: 8, y: 80, width: 100, height: 30))
     var infoLabel = UILabel()
     var viewsDictionary = [String: AnyObject]()
     
@@ -35,7 +35,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
         btn.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         btn.layer.position = CGPoint(x: 100, y: 100)
         btn.addTarget(self, action: "onClickBack", forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(btn);
+        self.view.addSubview(btn)
         btn.translatesAutoresizingMaskIntoConstraints = false
         viewsDictionary["btn_layout"] = btn
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[btn_layout(60)]-8-|",
@@ -46,12 +46,12 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
                                                                             options: NSLayoutFormatOptions(rawValue: 0),
                                                                             metrics: nil,
                                                                             views: viewsDictionary))
-        self.view.addSubview(btn);
+        self.view.addSubview(btn)
         
         // Titleラベル 生成
         titleLabel.text = "Info"
         titleLabel.textColor = UIColor.cyanColor()
-        self.view.addSubview(titleLabel);
+        self.view.addSubview(titleLabel)
         
         // Info 生成
         infoLabel.text = "Copyright (c) 2015 YUTA UCHIDA. All rights reserved.\n"
@@ -69,7 +69,7 @@ class SecondViewController: UIViewController, CLLocationManagerDelegate {
                                                                             options: NSLayoutFormatOptions(rawValue: 0),
                                                                             metrics: nil,
                                                                             views: viewsDictionary))
-        self.view.addSubview(infoLabel);
+        self.view.addSubview(infoLabel)
 
     }
     

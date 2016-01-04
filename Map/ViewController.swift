@@ -47,7 +47,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func initView() -> Void {
 
         // マップ 生成
-        self.mapView.frame = CGRectMake(0,0,self.view.bounds.size.width,self.view.bounds.size.height)
+        self.mapView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height)
         self.mapView.delegate = self
         self.view.addSubview(self.mapView)
         
@@ -55,7 +55,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         infoBtn = UIButton(type: UIButtonType.InfoDark)
         infoBtn.addTarget(self, action: "onClickInfo", forControlEvents: UIControlEvents.TouchUpInside)
         
-        infoBtn.translatesAutoresizingMaskIntoConstraints = false;
+        infoBtn.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(infoBtn)
         viewsDictionary["infoBtn_layout"] = infoBtn
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[infoBtn_layout(20)]-20-|",
@@ -66,10 +66,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                                                                             options: NSLayoutFormatOptions(rawValue: 0),
                                                                             metrics: nil,
                                                                             views: viewsDictionary))
-        self.view.addSubview(infoBtn);
+        self.view.addSubview(infoBtn)
         
         // Getボタン 生成
-        getLocationBtn = UIButton(frame: CGRectMake(0, 0, 50, 50))
+        getLocationBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         getLocationBtn.backgroundColor = UIColor.orangeColor()
         getLocationBtn.layer.masksToBounds = true
         getLocationBtn.setTitle("Get", forState: .Normal)
@@ -77,7 +77,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         getLocationBtn.addTarget(self, action: "onClickGetCurrentLocation:", forControlEvents: .TouchUpInside)
         
         getLocationBtn.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(getLocationBtn);
+        self.view.addSubview(getLocationBtn)
         viewsDictionary["getBtn_layout"] = getLocationBtn
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[getBtn_layout(50)]-|",
                                                                             options: NSLayoutFormatOptions(rawValue: 0),
@@ -87,7 +87,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                                                                             options: NSLayoutFormatOptions(rawValue: 0),
                                                                             metrics: nil,
                                                                             views: viewsDictionary))
-        self.view.addSubview(getLocationBtn);
+        self.view.addSubview(getLocationBtn)
         
     }
     
@@ -121,7 +121,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             
             let status = CLLocationManager.authorizationStatus()
             if(status == CLAuthorizationStatus.NotDetermined) {
-                print("didChangeAuthorizationStatus:\(status)");
+                print("didChangeAuthorizationStatus:\(status)")
                 self.lm.requestAlwaysAuthorization()
             }
             
@@ -206,7 +206,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let mapPoint:CLLocationCoordinate2D = CLLocationCoordinate2DMake(latitude,longitude)
         mapView.setCenterCoordinate(mapPoint, animated: false)
         
-        var zoom: MKCoordinateRegion = mapView.region
+        var zoom = mapView.region
         zoom.span.latitudeDelta = 0.005
         zoom.span.longitudeDelta = 0.005
         mapView.setRegion(zoom, animated: true)
